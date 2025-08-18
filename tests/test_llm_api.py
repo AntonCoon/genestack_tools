@@ -1,9 +1,11 @@
 import os
-from unittest.mock import patch, MagicMock
-import pytest
-from genestack_tools.llm_api import ask_model
-from genestack_tools.custom_types import AskModelRequest, AskModelResponse
+from unittest.mock import MagicMock, patch
+
 import dotenv
+import pytest
+
+from genestack_tools.custom_types import AskModelRequest, AskModelResponse
+from genestack_tools.llm_api import ask_model
 
 dotenv.load_dotenv()
 
@@ -21,28 +23,46 @@ def sample_request():
 def test_ask_model_success(sample_request):
     mock_response = MagicMock()
     mock_response.json.return_value = {
-        "choices": [{"message": {"content": "Genestack can make sequencing data smaller and faster"}}]
+        "choices": [
+            {
+                "message": {
+                    "content": "Genestack can make sequencing data smaller and faster"
+                }
+            }
+        ]
     }
     mock_response.raise_for_status.return_value = None
 
-    with patch("genestack_tools.llm_api.requests.post", return_value=mock_response) as mock_post:
+    with patch(
+        "genestack_tools.llm_api.requests.post", return_value=mock_response
+    ) as mock_post:
         response = ask_model(
             sample_request,
             base_url="https://openrouter.ai/api/v1/chat/completions",
-            headers={"Authorization": "Bearer fake_key", "Content-Type": "application/json"},
+            headers={
+                "Authorization": "Bearer fake_key",
+                "Content-Type": "application/json",
+            },
         )
 
         assert isinstance(response, AskModelResponse)
-        assert response.content == "Genestack can make sequencing data smaller and faster"
+        assert (
+            response.content == "Genestack can make sequencing data smaller and faster"
+        )
         mock_post.assert_called_once()
 
 
 def test_ask_model_exception(sample_request):
-    with patch("genestack_tools.llm_api.requests.post", side_effect=Exception("Network error")):
+    with patch(
+        "genestack_tools.llm_api.requests.post", side_effect=Exception("Network error")
+    ):
         response = ask_model(
             sample_request,
             base_url="https://openrouter.ai/api/v1/chat/completions",
-            headers={"Authorization": "Bearer fake_key", "Content-Type": "application/json"},
+            headers={
+                "Authorization": "Bearer fake_key",
+                "Content-Type": "application/json",
+            },
         )
 
         assert isinstance(response, AskModelResponse)

@@ -1,8 +1,11 @@
-import requests
 from typing import Dict, TypeVar
+
+import requests
+
 from .custom_types import AskModelRequest, AskModelResponse
 
 T = TypeVar("T", bound=AskModelResponse)
+
 
 def ask_model(
     request: AskModelRequest,

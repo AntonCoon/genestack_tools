@@ -27,8 +27,8 @@ class Assistent(ABC):
     @abstractmethod
     def answer_question(self, question: str, *args, **kwargs) -> str:
         """
-        Answer a general question about the data. 
-        It's going to be just llm requested via API, ofc, 
+        Answer a general question about the data.
+        It's going to be just llm requested via API, ofc,
         but here might be a cool Genestack model finetuned for specific data.
         """
         pass

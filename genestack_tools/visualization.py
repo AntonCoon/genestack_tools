@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
 from genestack_tools.microarray_assistent import MicroarrayExpressionAssistent
+
 
 def plot_expression_distribution(assistent: MicroarrayExpressionAssistent) -> None:
     if assistent.adata is None:
@@ -24,9 +26,9 @@ def plot_volcano(assistent: MicroarrayExpressionAssistent) -> None:
         top_table["log2FoldChange"],
         -np.log10(top_table["adj_pvalue"]),
         alpha=0.5,
-        c=color
+        c=color,
     )
-    plt.axhline(y=-np.log10(0.05), color='r', linestyle='--')
+    plt.axhline(y=-np.log10(0.05), color="r", linestyle="--")
     plt.xlabel("log2FoldChange")
     plt.ylabel("-log10(p-value)")
     plt.title("Volcano plot: I3C vs DMSO (all genes)")
