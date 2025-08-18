@@ -17,6 +17,7 @@ class MicroarrayExpressionAssistent(Assistent):
         self,
         base_url: str,
         headers: Dict[str, str],
+        model: str = "anthropic/claude-sonnet-4",
         response_format: Type[T] = AskModelResponse,
     ):
         self.gse = None
@@ -24,6 +25,7 @@ class MicroarrayExpressionAssistent(Assistent):
         self.adata: Optional[AnnData] = None
         self.base_url = base_url
         self.headers = headers
+        self.model = model
         self.response_format = response_format
         self.fit = None
         self.design = None
@@ -38,6 +40,13 @@ class MicroarrayExpressionAssistent(Assistent):
     def initiate_adata(
         self, group_pattern: str = "I3C|DMSO", exclude: str = "M_MidR3_Ind"
     ) -> None:
+        """
+        Yep, here I'm using docstrings just to clarify that this method
+        includes hardcode for a particular case: when we need to compare
+        samples treated with I3C with DMSO, which is a wild type in our case.
+        Moreover, this function will work, most probably, only for GSE32368.
+        Of course, it might be implemented more thoroughly if needed.
+        """
         pheno = self.gse.phenotype_data
         expr = self.gse.pivot_samples("VALUE")
 
@@ -80,7 +89,9 @@ class MicroarrayExpressionAssistent(Assistent):
         print(self.adata)
         print(self.adata.obs)
 
-    def normalize_data(self, lognorm: bool = True, filter_zeros: bool = True) -> None:
+    def normalize_data(
+        self, lognorm: bool = False, filter_zeros: bool = False, zscore: bool = False
+    ) -> None:
         if self.adata is None:
             print("No AnnData available. Run initiate_adata() first.")
             return
@@ -89,11 +100,20 @@ class MicroarrayExpressionAssistent(Assistent):
             sc.pp.filter_genes(self.adata, min_counts=0.001)
         if lognorm:
             sc.pp.log1p(self.adata)
+        if zscore:
+            X = self.adata.X
+            mean = X.mean(axis=0)
+            std = X.std(axis=0)
+            zero_std_mask = std == 0
+            std[zero_std_mask] = 1
+            X = (X - mean) / std
+            self.adata.X = X[:, ~zero_std_mask]
+            self.adata.var = self.adata.var.iloc[~zero_std_mask]
 
     def run_limma(
         self,
         formula: str = "~ 0 + group",
-        coef_name: str = "group[DMSO]",
+        coef_name: str = "group[I3C]",
         verbose: bool = True,
     ):
         if self.adata is None:
@@ -113,8 +133,8 @@ class MicroarrayExpressionAssistent(Assistent):
             print(top_table)
         return fit
 
-    def answer_question(self, question: str, *args, **kwargs) -> str:
-        request = AskModelRequest(question=question, args=args, kwargs=kwargs)
+    def answer_question(self, question) -> str:
+        request = AskModelRequest(prompt=question, model=self.model)
         return ask_model(
             request=request,
             base_url=self.base_url,
