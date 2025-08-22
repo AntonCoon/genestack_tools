@@ -90,25 +90,22 @@ class MicroarrayExpressionAssistent(Assistent):
         print(self.adata.obs)
 
     def normalize_data(
-        self, lognorm: bool = False, filter_zeros: bool = False, zscore: bool = False
+        self, lognorm: bool = False, filter_zeros: bool = False, total: bool = False
     ) -> None:
         if self.adata is None:
             print("No AnnData available. Run initiate_adata() first.")
             return
+
         self.adata.raw = self.adata
+
         if filter_zeros:
-            sc.pp.filter_genes(self.adata, min_counts=0.001)
+            sc.pp.filter_genes(self.adata, min_counts=1)
+
+        if total:
+            sc.pp.normalize_total(self.adata, target_sum=1)
+
         if lognorm:
             sc.pp.log1p(self.adata)
-        if zscore:
-            X = self.adata.X
-            mean = X.mean(axis=0)
-            std = X.std(axis=0)
-            zero_std_mask = std == 0
-            std[zero_std_mask] = 1
-            X = (X - mean) / std
-            self.adata.X = X[:, ~zero_std_mask]
-            self.adata.var = self.adata.var.iloc[~zero_std_mask]
 
     def run_limma(
         self,

@@ -40,3 +40,5 @@ All functionalities are demonstrated in the Jupyter notebook:
 `notebooks/midgut_microarray_analysis_i3c_vs_dmso.ipynb`  
 
 The notebook shows how to fetch GEO datasets, organize and normalize the data, run differential expression analysis with limma, visualize results, and query external databases using the assistant classes.
+
+**Note:** To use the `answer_question` function of `MicroarrayExpressionAssistent`, you need a `.env` file in the project directory containing a valid token from OpenRouter.
