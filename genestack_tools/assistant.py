@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 
-class Assistent(ABC):
+class Assistant(ABC):
     """
-    Abstract base class for an Assistent that can:
+    Abstract base class for an Assistant that can:
     - get data
     - normalize data
     - answer general questions

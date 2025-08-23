@@ -1,10 +1,10 @@
 import numpy as np
 import plotly.express
 
-from genestack_tools.microarray_assistent import MicroarrayExpressionAssistent
+from genestack_tools.microarray_assistant import MicroarrayExpressionAssistant
 
 
-def plot_expression_distribution(assistent: "MicroarrayExpressionAssistent") -> None:
+def plot_expression_distribution(assistent: "MicroarrayExpressionAssistant") -> None:
     if assistent.adata is None:
         print("No AnnData available. Run initiate_adata() first.")
         return
@@ -21,7 +21,7 @@ def plot_expression_distribution(assistent: "MicroarrayExpressionAssistent") -> 
     fig.show()
 
 
-def plot_volcano(assistent: "MicroarrayExpressionAssistent") -> None:
+def plot_volcano(assistent: "MicroarrayExpressionAssistant") -> None:
     if not hasattr(assistent, "top_table") or assistent.top_table is None:
         print("No top_table available. Run run_limma() first.")
         return

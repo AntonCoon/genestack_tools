@@ -41,4 +41,4 @@ All functionalities are demonstrated in the Jupyter notebook:
 
 The notebook shows how to fetch GEO datasets, organize and normalize the data, run differential expression analysis with limma, visualize results, and query external databases using the assistant classes.
 
-**Note:** To use the `answer_question` function of `MicroarrayExpressionAssistent`, you need a `.env` file in the project directory containing a valid token from OpenRouter.
+**Note:** To use the `answer_question` function of `MicroarrayExpressionAssistant`, you need a `.env` file in the project directory containing a valid token from OpenRouter.

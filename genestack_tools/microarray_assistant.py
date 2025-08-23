@@ -7,12 +7,12 @@ import patsy
 import scanpy as sc
 from anndata import AnnData
 
-from genestack_tools.assistent import Assistent
+from genestack_tools.assistant import Assistant
 from genestack_tools.custom_types import AskModelRequest, AskModelResponse
 from genestack_tools.llm_api import T, ask_model
 
 
-class MicroarrayExpressionAssistent(Assistent):
+class MicroarrayExpressionAssistant(Assistant):
     def __init__(
         self,
         base_url: str,
